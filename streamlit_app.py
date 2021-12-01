@@ -194,14 +194,14 @@ slider_container = st.container()
 extended_range = st.checkbox('allow parameters outside simulated range')
 if extended_range:
     slider_args = (
-        ('Facet', 0.0, 0.7, 0.3),
+        ('Facet', 0.0, 0.7, 0.4),
         ('Diameter (nm)', 20., 150., 80.),
         ('gap thickness (nm)', 0.5, 12., 1.),
         ('gap refractive index', 0.75, 2.5, 1.5),
     )
 else:
     slider_args = (
-        ('Facet', 0.15, 0.6, 0.3),
+        ('Facet', 0.15, 0.6, 0.4),
         ('Diameter (nm)', 40., 100., 80.),
         ('gap thickness (nm)', 0.75, 6., 1.),
         ('gap refractive index', 1., 2., 1.5),
