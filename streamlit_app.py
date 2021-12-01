@@ -187,7 +187,7 @@ def plot_modes(modes, geometry, resolution=300, coords={}, label=False, xs=[]):
         width=800)
 
 
-'''__Qausi-Normal modes of Nanoparticle on mirror__'''
+'''__Qausi-Normal modes of Nanoparticle on Mirror__'''
 plot_container = st.container()
 slider_container = st.container()
 
