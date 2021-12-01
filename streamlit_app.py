@@ -182,11 +182,9 @@ def plot_modes(modes, geometry, resolution=300, coords={}, label=False, xs=[]):
                        color='white',
                        dash='dash',
                    )), **coords)
-    fig.update_layout(  #title='',
-        #    xaxis_title='',
-        #    yaxis_title=adjectives[geometry]+' facet',
+    fig.update_layout(
         height=600,
-        width=1100)
+        width=800)
 
 
 '''__Qausi-Normal modes of Nanoparticle on mirror__'''
