@@ -17,26 +17,65 @@ from mim import MIM
 
 st.set_page_config(layout="wide")
 
+
 pi = 3.14159265
+c = 299792458
+eps_0 = 8.8541878128 * 10**-12
+mu_0 = 4 * pi * 10**-7
+e = 1.602176634 * 10**-19
+hbar = 1.0545718 * 10**-34
 
-
-def ev_to_wl(eV):
-    return 1239.8419300923943 / eV
-
-
-wl_to_ev = ev_to_wl
+eps_inf = 6
+omega_p_1 = 5.3700 * 10**15
+omega_p_2 = 2.2636 * 10**15
+omega_0_1 = 0.000 * 10**15
+omega_0_2 = 4.5720 * 10**15
+gamma_1 = 6.216 * 10**13
+gamma_2 = 1.332 * 10**15
 
 
 def wl_to_omega(wl):
-    return 2 * pi * 1239.8419300923943 / wl
+    return 2*pi*299_792_458/(wl*1e-9)
+
+# def omega_to_wl(omega):
+#     return wl_to_omega(omega)
+
+num = 4.135667516e-15*299_792_458/1e-9
+def wl_to_ev(wl):
+    return num/wl
+
+def ev_to_wl(ev):
+    return num/ev   
+
+def ev_to_omega(ev):
+    return wl_to_omega(ev_to_wl(ev))
+
+# def omega_to_ev(wl):
+#     return omega_to_ev(wl_to_omega(wl))
+
+def lor(omega, omega_p, omega_0, gamma):
+    return omega_p**2 / (omega**2 - omega_0**2 + 1j * omega * gamma)
 
 
-def Lorentz(wls, center_wl, eff):
-    eVs, center_eV = map(wl_to_ev, (wls, center_wl))
-    width_2 = MIM(center_eV, n, t) / (1 - eff)  # eV - = Gamma/2
-    lor = (width_2 / (width_2**2 + ((eVs - center_eV))**2)) / (2 * pi**2)
-    # 2pi times all eVs for angular frequency, then divide by pi for normalizing
-    return lor * eff
+def eps_m(omega):
+    lor1 = lor(omega, omega_p_1, omega_0_1, gamma_1)
+    lor2 = lor(omega, omega_p_2, omega_0_2, gamma_2)
+    return eps_inf * (1 - lor1 - lor2)
+
+
+def scaled_S_lm(wls, center_wl, eff):
+    omegas, center_omega_real = map(wl_to_omega, (wls, center_wl))
+
+    center_omega_imag = ev_to_omega(
+        MIM(wl_to_ev(center_wl), n, t) / (1 - eff))  # eV - = Gamma/2
+    center = (center_omega_real + 1j * center_omega_imag)
+
+    return  abs(eff * S_lm(omegas, center))**2 / 155_000
+
+
+def S_lm(omega, omega_lm):
+    delta_eps = eps_m(omega_lm) - 1
+    return (1 - eps_inf - (delta_eps * omega_lm / (omega - omega_lm)))
 
 
 def file_to_mode_name(file):
@@ -67,11 +106,11 @@ def imag_factory(parsed_txt):
     return inner_func
 
 
-def lorentz_factory(real_eq, imag_eq):
+def lines_factory(real_eq, imag_eq):
     def inner_func(wl):
         real = real_eq(f, D, t, n)
         efficiency = imag_eq(real, D)
-        return Lorentz(wl, real, efficiency)
+        return scaled_S_lm(wl, real, efficiency)
 
     return inner_func
 
@@ -84,8 +123,7 @@ def annotate_factory(real_eq, imag_eq):
 
     return inner_func
 
-
-@st.cache
+@st.cache(hash_funcs={type(complex(1,1)): lambda _: None})
 def make_modes(folder):
     modes = defaultdict(dict)
 
@@ -105,7 +143,7 @@ def make_modes(folder):
             modes[f'{mode} mode']['imag'] = imag_factory(parsed_txt)
 
     for mode in modes.values():
-        mode['Lorentz'] = lorentz_factory(mode['real'], mode['imag'])
+        mode['line'] = lines_factory(mode['real'], mode['imag'])
         mode['annotate'] = annotate_factory(mode['real'], mode['imag'])
 
     def xlim_func():
@@ -121,9 +159,9 @@ labels = set()
 def plot_modes(modes, geometry, resolution=300, coords={}, label=False, xs=[]):
     ys = np.empty((len(modes), resolution))
     for i, (name, mode) in enumerate(modes.items()):
-        y = mode['Lorentz'](xs)
+        y = mode['line'](xs)
         ys[i] = y
-        wl, eff = mode['annotate']()
+        # wl, eff = mode['annotate']()
         _label = f'{name}'  #', wl={round(wl)}nm, efficiency={np.around(eff, 2)}'
 
         fig.add_trace(
@@ -137,7 +175,7 @@ def plot_modes(modes, geometry, resolution=300, coords={}, label=False, xs=[]):
 
     fig.add_trace(
         go.Scatter(x=xs,
-                   y=(ys**2).sum(axis=0) / ys.sum(axis=0),
+                   y=ys.sum(axis=0),
                    name='sum',
                    showlegend=label,
                    line=dict(
@@ -197,7 +235,9 @@ with plot_container:
         shared_xaxes=True,
         x_title='wavelength (nm)',
         y_title='',
+        
     )
+
     xs = None
     geometries = {}
     x_lims = set()
