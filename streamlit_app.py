@@ -255,25 +255,26 @@ with plot_container:
         fig['layout'][f'yaxis{x}']['title'] = adjectives[geometry] + ' facet'
 
     st.plotly_chart(fig, use_column_width=True)
-r'''
+st.markdown(r'''
 __Description of parameters__
 
 __Circle__
 
-f: facet fraction.
+$f$: facet fraction.
 
 The ratio of facet diameter to spherical nanoparticle diameter.
+
         Range: 0.15-0.6
 ---------------------------------------------------------------------------
-D (nm): Sphere's Diameter.
+$D$ (nm): Sphere's Diameter.
 
         Range: 40-100nm        
 ---------------------------------------------------------------------------
-t (nm): gap thickness. 
+$t$ (nm): gap thickness. 
 
         Range: 0.75-6nm
 ---------------------------------------------------------------------------
-n: gap refractive index. 
+$n$: gap refractive index. 
 
         Range: 1.25-2
 ---------------------------------------------------------------------------
@@ -281,7 +282,7 @@ n: gap refractive index.
 
 __Triangle__
 
-_f_: facet fraction.
+$f$: facet fraction.
 
 Analoguous to the ratio of facet diameter to spherical nanoparticle diameter.
 $f = (fs/a)\frac{\sqrt[4]{3}}{2\sqrt{2(1+\sqrt{2})}}$,
@@ -289,34 +290,36 @@ where a is Rhombicuboctohedral side length, and fs is the facet side length.
 This definition was chosen to preserve the ratio of areas on the facet to the middle 
 cross-section of the nanoparticle in the spherical and rhombicuboctohedral cases.
 for a regular rhombicuboctohedron, use $\frac{\sqrt[4]{3}}{2\sqrt{2(1+\sqrt{2})}} \simeq 0.3$
+    
     Range: 0.15 - 0.6
 ---------------------------------------------------------------------------
-_D_ (nm): roughly equivalent to Diameter.
+$D$ (nm): roughly equivalent to Diameter.
 
 A sphere of diameter D and Rhombicuboctohedron
 defined by parameter D have the same cross-sectional area.
-D = $a\sqrt{8(1+\sqrt{2})/\pi}\simeq 2.48a$
+$D = a\sqrt{8(1+\sqrt{2})/\pi}\simeq 2.48a$
     
         Range: 40-100nm
 ---------------------------------------------------------------------------
 
 __Square__
 
-_f_: facet fraction.
+$f$: facet fraction.
 
 Analoguous to the ratio of facet diameter to spherical nanoparticle diameter.
-f = $(fs/a)(1/(2(1+\sqrt{2})))$,
+$f = (fs/a)(1/(2(1+\sqrt{2})))$,
 where a is Rhombicuboctohedral side length, and fs is the facet side length.
 This definition was chosen to preserve the ratio of areas on the facet to the middle 
 cross-section of the nanoparticle in the spherical and rhombicuboctohedral cases.
 for a regular rhombicuboctohedron, use $1/2(1+\sqrt{2}) \simeq 0.46$
+        
         Range: 0.15 - 0.6
 ---------------------------------------------------------------------------
-_D_ (nm): roughly equivalent to Diameter.
+$D$(nm): roughly equivalent to Diameter.
 
 A sphere of diameter D and Rhombicuboctohedron
 defined by parameter D have the same cross-sectional area.
-D = $a\sqrt{8(1+\sqrt{2})/\pi} \simeq 2.48a$
+$D = a\sqrt{8(1+\sqrt{2})/\pi} \simeq 2.48a$
     
         Range: 40-100nm
 
@@ -332,3 +335,4 @@ imag: efficiency (unitless) = polynomial(D, real (eV), [f])
 
 (f is an extra regressor for the 20 mode)
 '''
+)
