@@ -6,7 +6,7 @@ authors = ["Eoin Elliott"]
 
 [tool.poetry.dependencies]
 python = ">=3.6,<4.0"
-streamlit = ">=0.86.0"
+streamlit = ">=0.1.0"
 plotly = "*"
 numpy = "*"
 

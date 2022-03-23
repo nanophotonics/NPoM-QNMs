@@ -33,12 +33,9 @@ omega_0_2 = 4.5720 * 10**15
 gamma_1 = 6.216 * 10**13
 gamma_2 = 1.332 * 10**15
 
-
+ 
 def wl_to_omega(wl):
     return 2*pi*299_792_458/(wl*1e-9)
-
-# def omega_to_wl(omega):
-#     return wl_to_omega(omega)
 
 num = 4.135667516e-15*299_792_458/1e-9
 def wl_to_ev(wl):
@@ -49,9 +46,6 @@ def ev_to_wl(ev):
 
 def ev_to_omega(ev):
     return wl_to_omega(ev_to_wl(ev))
-
-# def omega_to_ev(wl):
-#     return omega_to_ev(wl_to_omega(wl))
 
 def lor(omega, omega_p, omega_0, gamma):
     return omega_p**2 / (omega**2 - omega_0**2 + 1j * omega * gamma)
