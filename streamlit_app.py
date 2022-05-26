@@ -17,7 +17,6 @@ from mim import MIM
 
 st.set_page_config(layout="wide")
 
-
 pi = 3.14159265
 c = 299792458
 eps_0 = 8.8541878128 * 10**-12
@@ -117,7 +116,7 @@ def annotate_factory(real_eq, imag_eq):
 
     return inner_func
 
-@st.cache(hash_funcs={type(complex(1,1)): lambda _: None})
+# @st.cache(hash_funcs={type(complex(1,1)): lambda _: None}, max_entries=1) # causes a memory leak for some reason
 def make_modes(folder):
     modes = defaultdict(dict)
 
@@ -146,11 +145,9 @@ def make_modes(folder):
 
     return modes, xlim_func
 
-
 labels = set()
 
-
-def plot_modes(modes, geometry, resolution=300, coords={}, label=False, xs=[]):
+def plot_modes(fig, modes, resolution=300, coords={}, label=False, xs=[]):
     ys = np.empty((len(modes), resolution))
     for i, (name, mode) in enumerate(modes.items()):
         y = mode['line'](xs)
@@ -238,8 +235,8 @@ with plot_container:
         x_lims.update(xlim_func())
     xs = np.linspace(min(x_lims), max(x_lims), 300)
     for i, (geometry, modes) in enumerate(geometries.items()):
-        plot_modes(modes,
-                   geometry,
+        plot_modes(fig, 
+                   modes,
                    coords=dict(row=i + 1, col=1),
                    label=(geometry == 'square'),
                    xs=xs)  # x axis changes))
