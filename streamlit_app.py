@@ -257,15 +257,25 @@ parameter_widget_dict = {
 }
 
 
+@st.cache
+def initialize_session_state():
+    for param, wargs in parameter_widget_dict.items():
+        st.session_state[f"{param}_slider"] = wargs["value"]
+        st.session_state[f"{param}_spin"] = wargs["value"]
+
+
 def spin_changed():
     for param in parameter_widget_dict.keys():
-        st.session_state[f"{param}_slider"] = st.session_state[f"{param}_spin"]
+        spinboxes[param] = st.session_state[f"{param}_spin"]
 
- 
+
 def slider_changed():
     for param in parameter_widget_dict.keys():
-        st.session_state[f"{param}_spin"] = st.session_state[f"{param}_slider"]
- 
+        sliders[param] = st.session_state[f"{param}_slider"]
+
+
+initialize_session_state()
+sliders, spinboxes = {}, {}
 
 with slider_container:
     for col, (param, wargs) in zip(st.columns(4), parameter_widget_dict.items()):
@@ -280,11 +290,11 @@ with slider_container:
                 wargs["normal_range"]["max_value"],
             )
         with col:
-            st.slider(
+            sliders[param] = st.slider(
                 wargs["label"],
                 min_value,
                 max_value,
-                wargs["value"],
+                # wargs["value"],
                 key=f"{param}_slider",
                 on_change=slider_changed,
             )
@@ -300,14 +310,13 @@ with slider_container:
                 wargs["normal_range"]["max_value"],
             )
         with col:
-            st.number_input(
+            spinboxes[param] = st.number_input(
                 wargs["label"],
                 min_value,
                 max_value,
-                wargs["value"],
+                # wargs["value"],
                 step=wargs["step"],
                 key=f"{param}_spin",
-                on_change=spin_changed,
             )
 
 for param in parameter_widget_dict:
@@ -361,7 +370,7 @@ water_plot_container = st.container()
 modes = [m + " mode" for m in "10 11 20 21 22 30 31 32 33 40 41".split()]
 colors = {m: c for m, c in zip(modes, px.colors.qualitative.Alphabet)}
 
-folders =Path('geometries') / 'circle',  Path('water')
+folders = Path("geometries") / "circle", Path("water")
 
 with water_plot_container:
     fig = make_subplots(
@@ -390,7 +399,7 @@ with water_plot_container:
 
         # for i, g in enumerate(folders):
         x = "" if not i else i + 1
-        fig["layout"][f"yaxis{x}"]["title"] = 'wet' if geometry =='water' else 'dry'
+        fig["layout"][f"yaxis{x}"]["title"] = "wet" if geometry == "water" else "dry"
 
     st.plotly_chart(fig, use_column_width=True)
 st.markdown(
