@@ -266,16 +266,15 @@ def initialize_session_state():
 
 def spin_changed():
     for param in parameter_widget_dict.keys():
-        spinboxes[param] = st.session_state[f"{param}_spin"]
+        st.session_state[f"{param}_slider"] = st.session_state[f"{param}_spin"]
 
 
 def slider_changed():
     for param in parameter_widget_dict.keys():
-        sliders[param] = st.session_state[f"{param}_slider"]
+        st.session_state[f"{param}_spin"] = st.session_state[f"{param}_slider"]
 
 
 initialize_session_state()
-sliders, spinboxes = {}, {}
 
 with slider_container:
     for col, (param, wargs) in zip(st.columns(4), parameter_widget_dict.items()):
@@ -290,7 +289,7 @@ with slider_container:
                 wargs["normal_range"]["max_value"],
             )
         with col:
-            sliders[param] = st.slider(
+            st.slider(
                 wargs["label"],
                 min_value,
                 max_value,
@@ -310,13 +309,14 @@ with slider_container:
                 wargs["normal_range"]["max_value"],
             )
         with col:
-            spinboxes[param] = st.number_input(
+            st.number_input(
                 wargs["label"],
                 min_value,
                 max_value,
                 # wargs["value"],
                 step=wargs["step"],
                 key=f"{param}_spin",
+                on_change=spin_changed,
             )
 
 for param in parameter_widget_dict:
