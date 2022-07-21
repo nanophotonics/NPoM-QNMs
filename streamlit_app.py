@@ -319,6 +319,7 @@ with slider_container:
                 on_change=spin_changed,
             )
 
+st.write(st.session_state, 'after')
 for param in parameter_widget_dict:
     vars()[param] = st.session_state[f"{param}_spin"]
 
