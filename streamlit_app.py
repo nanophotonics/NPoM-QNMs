@@ -257,13 +257,6 @@ parameter_widget_dict = {
 }
 
 
-@st.cache
-def initialize_session_state():
-    for param, wargs in parameter_widget_dict.items():
-        st.session_state[f"{param}_slider"] = wargs["value"]
-        st.session_state[f"{param}_spin"] = wargs["value"]
-
-
 def spin_changed():
     for param in parameter_widget_dict.keys():
         st.session_state[f"{param}_slider"] = st.session_state[f"{param}_spin"]
@@ -274,8 +267,6 @@ def slider_changed():
         st.session_state[f"{param}_spin"] = st.session_state[f"{param}_slider"]
 
 
-initialize_session_state()
-print(st.session_state)
 with slider_container:
     for col, (param, wargs) in zip(st.columns(4), parameter_widget_dict.items()):
         if extended_range:
@@ -291,9 +282,9 @@ with slider_container:
         with col:
             st.slider(
                 wargs["label"],
-                min_value,
-                max_value,
-                # wargs["value"],
+                min_value=min_value,
+                max_value=max_value,
+                value=wargs["value"],
                 key=f"{param}_slider",
                 on_change=slider_changed,
             )
@@ -311,15 +302,14 @@ with slider_container:
         with col:
             st.number_input(
                 wargs["label"],
-                min_value,
-                max_value,
-                # wargs["value"],
+                min_value=min_value,
+                max_value=max_value,
+                value=wargs["value"],
                 step=wargs["step"],
                 key=f"{param}_spin",
                 on_change=spin_changed,
             )
 
-st.write(st.session_state, 'after')
 for param in parameter_widget_dict:
     vars()[param] = st.session_state[f"{param}_spin"]
 
