@@ -275,7 +275,7 @@ def slider_changed():
 
 
 initialize_session_state()
-
+print(st.session_state)
 with slider_container:
     for col, (param, wargs) in zip(st.columns(4), parameter_widget_dict.items()):
         if extended_range:
