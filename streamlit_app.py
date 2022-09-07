@@ -195,7 +195,7 @@ def plot_modes(fig, modes, resolution=300, coords={}, label=False, xs=[]):
     fig.update_layout(height=500, width=650)
 
 
-"""__Qausi-Normal modes of Nanoparticle on Mirror__"""
+"""__Quasi-Normal modes of Nanoparticle on Mirror__"""
 plot_container = st.container()
 slider_container = st.container()
 
