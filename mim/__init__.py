@@ -16,6 +16,6 @@ powers = np.load(
 
 def MIM(real, n, t):
     return (
-        np.sum(coef * (np.product(np.array([real, n, t]) ** powers, axis=1)))
+        np.sum(coef * (np.prod(np.array([real, n, t]) ** powers, axis=1)))
         + intercept
     )
